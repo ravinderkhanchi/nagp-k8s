@@ -1,4 +1,4 @@
-Code repi link- https://github.com/ravinderkhanchi/nagp-k8s
+Code repo link- https://github.com/ravinderkhanchi/nagp-k8s
 Docker pull command for app image- docker pull ravindercool28/nagp-k8s:1.0
 
 As I have used Minikube to setup the k8s cluster, I need to do tunneling for the same.
