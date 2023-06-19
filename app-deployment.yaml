@@ -1,0 +1,65 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nagp-k8s-deployment
+spec:
+  selector:
+    matchLabels:
+      app: nagp-mysql
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  replicas: 4
+  template:
+    metadata:
+      labels:
+        app: nagp-mysql
+    spec:
+      containers:
+        - name: nagp-k8s
+          image: ravindercool28/nagp-k8s:1.0
+          ports:
+            - containerPort: 8080
+          env:
+            - name: DB_HOST
+              valueFrom :
+                configMapKeyRef :
+                  name : db-config
+                  key :  host
+
+            - name: DB_NAME
+              valueFrom :
+                configMapKeyRef :
+                  name : db-config
+                  key :  dbName
+
+            - name: DB_USERNAME
+              valueFrom :
+                secretKeyRef :
+                  name : mysql-secrets
+                  key :  username
+
+            - name: DB_PASSWORD
+              valueFrom :
+                secretKeyRef :
+                  name : mysql-secrets
+                  key :  password
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: nagp-k8s-service
+spec:
+  selector:
+    app: nagp-mysql
+  ports:
+    - protocol: "TCP"
+      port: 8080
+      targetPort: 8080
+
+  type: LoadBalancer
+
